@@ -1,40 +1,88 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:pas_mobile_11pplg1_35/network/base_url.dart';
+import 'package:pas_mobile_11pplg1_35/models/login_model.dart';
+import 'package:pas_mobile_11pplg1_35/models/register_model.dart';
 import 'package:pas_mobile_11pplg1_35/models/product_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  Future<Map<String, dynamic>> login(String email, String password) async {
-    final Uri url = Uri.parse("${BaseURL.login}/latihan/login");
+  static const String baseUrl = 'https://mediadwi.com/api/latihan';
+  static const String productUrl = 'https://fakestoreapi.com';
 
-    final response = await http.post(
-      url,
-      body: {"email": email, "password": password},
-    );
+  static Future<RegisterModel> register(
+      String username,
+      String password,
+      String fullname,
+      String email,
+      ) async {
+    final url = Uri.parse('$baseUrl/register-user');
 
-    return json.decode(response.body);
+    final response = await http.post(url, body: {
+      'username': username,
+      'password': password,
+      'full_name': fullname,
+      'email': email,
+    });
+
+    print(response.statusCode);
+    print(response.body);
+
+    final decoded = jsonDecode(response.body);
+
+    if (decoded['status'] == true) {
+      return RegisterModel(
+        username: username,
+        password: password,
+        fullname: fullname,
+        email: email,
+      );
+    } else {
+      throw Exception(decoded['message'] ?? "Register gagal.");
+    }
   }
 
-   Future<Map<String, dynamic>> register(String email, String password) async {
-    final Uri url = Uri.parse("${BaseURL.register}/register-user");
+  static Future<LoginModel> login(String username, String password) async {
+    final url = Uri.parse('$baseUrl/login');
 
-    final response = await http.post(
-      url,
-      body: {"email": email, "password": password},
-    );
+    final response = await http.post(url, body: {
+      'username': username,
+      'password': password,
+    });
 
-    return json.decode(response.body);
+    print(response.statusCode);
+    print(response.body);
+
+    final decoded = jsonDecode(response.body);
+
+    if (decoded['status'] == true) {
+      final token = decoded['token'];
+
+      // Simpan token ke SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString("token", token);
+
+      // Return login model
+      return LoginModel(
+        username: username,
+        password: password,
+        email: decoded['email'] ?? '',
+        token: token,
+      );
+    } else {
+      throw Exception(decoded['message'] ?? "Login gagal.");
+    }
   }
 
-  Future<List<ProductModel>> fetchProducts() async {
-    final Uri url = Uri.parse("${BaseURL.product}/products");
+  static Future<List<ProductModel>> getProduct() async {
+    final url = Uri.parse('$productUrl/products');
 
     final response = await http.get(url);
 
-    final List<dynamic> data = json.decode(response.body);
-    return data.map((item) => ProductModel.fromJson(item)).toList();
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data.map((e) => ProductModel.fromJson(e)).toList();
+    } else {
+      throw Exception("Gagal memuat produk");
+    }
   }
-  
-
 }
-

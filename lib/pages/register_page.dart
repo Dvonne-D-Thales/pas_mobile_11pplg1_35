@@ -55,7 +55,7 @@ class RegisterPage extends StatelessWidget {
                       suffixIcon: registerController.obscurePassword.value
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      onSuffixTap: registerController.togglePasswordVisibility,
+                      onSuffixTap: registerController.toggleObscure,
                     ),
                   ),
                   const SizedBox(height: 20),

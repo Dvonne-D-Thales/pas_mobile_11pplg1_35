@@ -19,23 +19,23 @@ class ProductPage extends GetView<ProductController> {
     return Scaffold(
       appBar: AppBar(title: const Text("Daftar Produk")),
       body: Obx(() {
-        if (controller.loading.value) {
+        if (controller.isLoading.value) {
           return const LoadingWidget();
         }
 
         return Column(
           children: [
-            Padding(padding: const EdgeInsets.fromLTRB(12, 12, 12, 6)),
+            // gunakan SizedBox untuk spacing (Padding tanpa child tidak ideal)
+            const SizedBox(height: 12),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(10),
-                itemCount: controller.productList.length,
+                itemCount: controller.product.length,
                 itemBuilder: (context, index) {
-                  final ProductModel product = controller.productList[index];
+                  final ProductModel product = controller.product[index];
                   final bookmarked = favController.isFavorite(product);
                   return ProductCard(
                     product: product,
-                    onTap: () => controller.selectProduct(product),
                     isBookmarked: bookmarked,
                     onBookmark: () => favController.toggleFavorite(product),
                   );

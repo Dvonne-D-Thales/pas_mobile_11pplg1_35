@@ -47,14 +47,14 @@ class LoginPage extends StatelessWidget {
                 // Username
                 CustomTextField(
                   label: "Username",
-                  controller: controller.usernameC,
+                  controller: controller.usernameController,
                 ),
                 const SizedBox(height: 15),
 
                 // Password
                 CustomTextField(
                   label: "Password",
-                  controller: controller.passwordC,
+                  controller: controller.passwordController,
                   obscure: true,
                 ),
                 const SizedBox(height: 25),
@@ -63,8 +63,8 @@ class LoginPage extends StatelessWidget {
                 Obx(() {
                   return CustomButton(
                     text: "Login",
-                    onPressed: controller.loginNow,
-                    loading: controller.loading.value,
+                    onPressed: controller.login,
+                    loading: controller.isLoading.value,
                   );
                 }),
 

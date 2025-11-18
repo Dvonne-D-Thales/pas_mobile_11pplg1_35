@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: Routes.mainmenu,
+      initialRoute: Routes.login,
       getPages: AppPages.pages,
     );
   }
