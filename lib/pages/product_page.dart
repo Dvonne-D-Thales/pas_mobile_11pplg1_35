@@ -23,19 +23,26 @@ class ProductPage extends GetView<ProductController> {
           return const LoadingWidget();
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(10),
-          itemCount: controller.productList.length,
-          itemBuilder: (context, index) {
-            final ProductModel product = controller.productList[index];
-            final bookmarked = favController.isFavorite(product);
-            return ProductCard(
-              product: product,
-              onTap: () => controller.selectProduct(product),
-              isBookmarked: bookmarked,
-              onBookmark: () => favController.toggleFavorite(product),
-            );
-          },
+        return Column(
+          children: [
+            Padding(padding: const EdgeInsets.fromLTRB(12, 12, 12, 6)),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(10),
+                itemCount: controller.productList.length,
+                itemBuilder: (context, index) {
+                  final ProductModel product = controller.productList[index];
+                  final bookmarked = favController.isFavorite(product);
+                  return ProductCard(
+                    product: product,
+                    onTap: () => controller.selectProduct(product),
+                    isBookmarked: bookmarked,
+                    onBookmark: () => favController.toggleFavorite(product),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       }),
     );

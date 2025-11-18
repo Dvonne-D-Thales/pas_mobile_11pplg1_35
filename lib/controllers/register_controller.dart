@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pas_mobile_11pplg1_35/pages/login_page.dart';
 import 'package:pas_mobile_11pplg1_35/helpers/db_helper.dart';
+import 'package:pas_mobile_11pplg1_35/routes/routes.dart';
 
 class RegisterController extends GetxController {
   // Text editing controllers
@@ -35,7 +35,6 @@ class RegisterController extends GetxController {
 
     isLoading.value = true;
     try {
-      // Simulate network call or registration logic
       await Future.delayed(const Duration(seconds: 1));
 
       // Save basic user info via DBHelper
@@ -46,7 +45,7 @@ class RegisterController extends GetxController {
       await DBHelper.instance.saveUser(username: username,password: password,fullname: fullname, email: email);
 
       // On success navigate to LoginPage
-      Get.off(() => LoginPage());
+      Get.offAllNamed(Routes.login);
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -62,6 +61,8 @@ class RegisterController extends GetxController {
   void onClose() {
     usernameController.dispose();
     passwordController.dispose();
+    fullnameController.dispose();
+    emailController.dispose();
     super.onClose();
   }
 }
